@@ -4,18 +4,14 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Tab
@@ -36,11 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mobiledev.R
+import com.example.mobiledev.data.HourDto
 import com.example.mobiledev.data.WeatherModel
 import com.example.mobiledev.ui.theme.BlueLight
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONObject
 
 
 @Composable
@@ -95,9 +90,9 @@ fun MainCard(currentDay: MutableState<WeatherModel>, onClickSync: () -> Unit, on
                     )
                     Text(
                         text = if(currentDay.value.currentTemp.isNotEmpty())
-                            currentDay.value.currentTemp.toFloat().toInt().toString() + "°C"
-                        else currentDay.value.maxTemp.toFloat().toInt().toString() +
-                                "°C/${currentDay.value.minTemp.toFloat().toInt()}°C",
+                            currentDay.value.currentTemp
+                        else currentDay.value.maxTemp +
+                                "°C/${currentDay.value.minTemp}",
                         style = TextStyle(fontSize = 65.sp),
                         color = Color.White
                     )
@@ -123,8 +118,8 @@ fun MainCard(currentDay: MutableState<WeatherModel>, onClickSync: () -> Unit, on
                         }
                         Text(
                             text = "${currentDay.value
-                                .maxTemp.toFloat().toInt()}°C/${currentDay
-                                .value.minTemp.toFloat().toInt()}°C",
+                                .maxTemp}/${currentDay
+                                .value.minTemp}",
                             style = TextStyle(fontSize = 16.sp),
                             color = Color.White
                         )
@@ -206,22 +201,20 @@ fun TabLayout(daysList: MutableState<List<WeatherModel>>, currentDay: MutableSta
     }
 }
 
-private fun getWeatherByHours(hours: String): List<WeatherModel>{
-    if( hours.isEmpty()) return listOf()
-    val hoursArray = JSONArray(hours)
+private fun getWeatherByHours(hours: List<HourDto>): List<WeatherModel> {
+    if (hours.isEmpty()) return listOf()
     val list = ArrayList<WeatherModel>()
-    for (i in 0 until hoursArray.length()){
-        val item = hoursArray[i] as JSONObject
+    hours.forEach { item ->
         list.add(
             WeatherModel(
-                "",
-                item.getString("time"),
-                item.getString("temp_c").toFloat().toInt().toString()+"°C",
-                item.getJSONObject("condition").getString("text"),
-                item.getJSONObject("condition").getString("icon"),
-                "",
-                "",
-                ""
+                city = "",
+                time = item.time,
+                currentTemp = item.tempC.toFloat().toInt().toString() + "°C",
+                condition = item.condition.text,
+                icon = item.condition.icon,
+                maxTemp = "",
+                minTemp = "",
+                hours = listOf()
             )
         )
     }
