@@ -3,7 +3,15 @@ package com.example.mobiledev
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.mobiledev.screens.MainScreen
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.mobiledev.screens.MainCard
+import com.example.mobiledev.screens.TabLayout
 import com.example.mobiledev.ui.theme.MobileDevTheme
 
 const val API_KEY = "7f6eebb6101546f29f2122941242210"
@@ -12,7 +20,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MobileDevTheme {
-               MainScreen()
+                Image(
+                    painter = painterResource(id = R.drawable.back_ground),
+                    contentDescription = "im1",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(0.7f),
+                    contentScale = ContentScale.Crop
+                )
+                Column {
+                    MainCard()
+                    TabLayout()
+                }
             }
         }
     }
