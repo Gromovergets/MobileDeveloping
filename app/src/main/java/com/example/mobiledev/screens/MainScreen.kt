@@ -4,9 +4,11 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -146,10 +149,12 @@ fun TabLayout() {
     val tabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
     Column(
-        modifier = Modifier.padding(
-            start = 5.dp,
-            end = 5.dp
-        ).clip(RoundedCornerShape(5.dp))
+        modifier = Modifier
+            .padding(
+                start = 5.dp,
+                end = 5.dp
+            )
+            .clip(RoundedCornerShape(5.dp))
     ) {
         TabRow(
             selectedTabIndex = tabIndex,
@@ -182,6 +187,13 @@ fun TabLayout() {
             state = pagerState,
             modifier = Modifier.weight(1.0f)
         ) { index ->
+            LazyColumn (
+                modifier = Modifier.fillMaxSize()
+            ){
+                items(15){
+                    ListItem()
+                }
+            }
         }
     }
 }
