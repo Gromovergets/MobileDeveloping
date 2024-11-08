@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mobiledev.db.MainDb
 import com.example.mobiledev.utils.ListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,8 +15,22 @@ class MainViewModel @Inject constructor(
     val mainDb: MainDb
 ): ViewModel() {
     val mainList = mutableStateOf(emptyList<ListItem>())
-    fun getAllItemsByCategory(cat: String) = viewModelScope.launch {
-        mainList.value = mainDb.dao.getAllItemsByCategory(cat)
+    private var job : Job? = null
+    fun getAllItemsByCategory(cat: String) {
+        job?.cancel()
+        job = viewModelScope.launch {
+            mainDb.dao.getAllItemsByCategory(cat).collect{ list ->
+                mainList.value = list
+            }
+        }
+    }
+    fun getFavorites() {
+        job?.cancel()
+        job = viewModelScope.launch {
+            mainDb.dao.getFavorites().collect{ list ->
+                mainList.value = list
+            }
+        }
     }
     fun insertItem(item: ListItem) = viewModelScope.launch {
         mainDb.dao.insertItem(item)
